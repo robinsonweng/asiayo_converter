@@ -13,12 +13,16 @@ from rest_framework import (
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 
-from api.serializer.order_format_converter import CreateOrderFormatConverterSerializer
+from api.serializer.order_format_converter import (
+    CreateOrderFormatConverterSerializer
+)
 
 
 class OrderFormatConverterView(viewsets.ViewSet):
     def create(self, request: Request) -> Response:
-        data_serializer = CreateOrderFormatConverterSerializer(data=request.data)
+        data_serializer = CreateOrderFormatConverterSerializer(
+            data=request.data
+        )
         if not data_serializer.is_valid():
             raise ValidationError("Incorrect json field")
 
@@ -32,6 +36,7 @@ class OrderFormatConverterView(viewsets.ViewSet):
             data={},
             status=status.HTTP_201_CREATED,
         )
+
     def contain_non_english(self, value: str) -> str:
         # only english and space is allowed
 
@@ -41,7 +46,11 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
         for c in value:
             ascii_value = ord(c)
-            if not ((65 <= ascii_value <= 90) or (97 <= ascii_value <= 122) or ascii_value == 32):
+            if not (
+                (65 <= ascii_value <= 90) or
+                (97 <= ascii_value <= 122) or
+                ascii_value == 32
+            ):
                 return True
 
         return False

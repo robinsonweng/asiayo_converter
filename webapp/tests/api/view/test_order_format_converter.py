@@ -106,4 +106,3 @@ class TestOrderFormatConverterView(APITestBase):
 
         expected_response = {}
         self.assertDictEqual(response.json(), expected_response)
-
