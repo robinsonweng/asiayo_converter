@@ -11,10 +11,17 @@ from rest_framework import (
     status
 )
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+
+from api.serializer.order_format_converter import CreateOrderFormatConverterSerializer
 
 
 class OrderFormatConverterView(viewsets.ViewSet):
     def create(self, request: Request) -> Response:
+        data_serializer = CreateOrderFormatConverterSerializer(data=request.data)
+        if not data_serializer.is_valid():
+            raise ValidationError("Incorrect json field")
+
         return Response(
             data={},
             status=status.HTTP_201_CREATED,
