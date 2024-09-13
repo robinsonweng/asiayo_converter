@@ -5,7 +5,7 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
       args:
-        - USER_NAME=robinson
+        - USER_NAME=${DOCKER_USER_NAME}
     environment:
       - DJANGO__DEBUG=${DJANGO__DEBUG}
       - DJANGO__SECRET_KEY=${DJANGO__SECRET_KEY}
