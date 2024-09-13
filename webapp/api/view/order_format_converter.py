@@ -32,6 +32,9 @@ class OrderFormatConverterView(viewsets.ViewSet):
         if self.not_capicalize(data_serializer["name"].value):
             raise ValidationError("Name is not capitalized")
 
+        if self.price_over_2000(data_serializer["price"].value):
+            raise ValidationError("Price is over 2000")
+
         return Response(
             data={},
             status=status.HTTP_201_CREATED,
@@ -95,5 +98,10 @@ class OrderFormatConverterView(viewsets.ViewSet):
         return False
 
     def price_over_2000(self, value: int) -> bool:
-        pass
+        if value > 2000:
+            return True
+        return False
 
+
+class OrderFormatConverter(object):
+    pass
