@@ -35,9 +35,10 @@ class OrderFormatConverterView(viewsets.ViewSet):
         # upper case is 65 ~ 90
         # lower case is 97 ~ 122
         # space is 32
+
         for c in value:
             ascii_value = ord(c)
             if not ((65 <= ascii_value <= 90) or (97 <= ascii_value <= 122) or ascii_value == 32):
-                return  True
+                return True
 
         return False
