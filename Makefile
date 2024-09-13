@@ -29,7 +29,7 @@ down:
 	docker compose -f dev.yml down --rmi local
 
 .PHONY: freeze-dev
-freeze-prod:
+freeze-dev:
 	./$(VENV_PATH)/bin/pip freeze > $(WEBAPP_PATH)/requirements/dev.txt
 
 # for django
