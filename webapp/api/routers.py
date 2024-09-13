@@ -20,8 +20,8 @@ order_router.register(
     basename="orders",
 )
 
-main_router = SimpleRouter(
+v1_router = SimpleRouter(
     trailing_slash=False,
 )
 
-main_router.registry.extend(order_router.registry)
+v1_router.registry.extend(order_router.registry)

@@ -21,7 +21,7 @@ class APITestBase(APITestCase):
 
 
 class TestOrderFormatConverterView(APITestBase):
-    view_name = "api:orders-list"
+    view_name = "v1:orders-list"
 
     def test_given_unsupported_currency_type_should_400(self):
         data = {

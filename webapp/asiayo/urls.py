@@ -16,10 +16,28 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from drf_yasg.generators import OpenAPISchemaGenerator
 
-from api.routers import main_router
+from api.routers import v1_router
+
+
+v1_schema = get_schema_view(
+    openapi.Info(
+        title="asiayo take home quiz",
+        default_version="v1",
+    ),
+    public=True,
+    generator_class=OpenAPISchemaGenerator,
+    patterns=[
+        path("api/v1/", include(v1_router.urls))
+    ]
+)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include((main_router.urls, "api"), namespace="api"))
+    path('api/v1/swagger', v1_schema.with_ui("swagger"), name="v1_swagger"),
+    path('api/v1/', include((v1_router.urls, "api"), namespace="v1")),
 ]
