@@ -35,21 +35,19 @@ class OrderFormatConverterView(viewsets.ViewSet):
             raise ValidationError("Currency format is wrong")
         currency = SupportedCurrency(currency)
 
-        order_format_converter = OrderFormatConverter(name, price, currency)
+        order_name = OrderName(name)
+        order_fee = OrderFee(price, currency)
 
-        if order_format_converter.contain_non_english():
+        if order_name.contain_non_english():
             raise ValidationError("Name contains Non-English characters")
 
-        if order_format_converter.not_capicalize():
+        if order_name.not_capicalize():
             raise ValidationError("Name is not capitalized")
 
-        if order_format_converter.price_over_2000():
+        if order_fee.price_over_2000():
             raise ValidationError("Price is over 2000")
 
-        price, currency = order_format_converter.convert_USD_to_TWD(
-            order_format_converter.price,
-            order_format_converter.currency
-        )
+        price, currency = order_fee.convert_USD_to_TWD()
         data_serializer.validated_data["price"] = price
         data_serializer.validated_data["currency"] = currency
 
@@ -59,16 +57,9 @@ class OrderFormatConverterView(viewsets.ViewSet):
         )
 
 
-class OrderFormatConverter(object):
-    def __init__(
-        self,
-        name: str,
-        price: int,
-        currency: SupportedCurrency
-    ) -> None:
+class OrderName(object):
+    def __init__(self, name) -> None:
         self.name = name
-        self.price = price
-        self.currency = currency
 
     def contain_non_english(self) -> bool:
         # only english and space is allowed
@@ -127,15 +118,21 @@ class OrderFormatConverter(object):
 
         return False
 
+
+class OrderFee(object):
+    def __init__(self, price: int, currency: SupportedCurrency) -> None:
+        self.price = price
+        self.currency = currency
+
     def price_over_2000(self) -> bool:
         if self.price > 2000:
             return True
         return False
 
-    @staticmethod
-    def convert_USD_to_TWD(price: int, currency: SupportedCurrency):
-        if currency == SupportedCurrency.USD:
-            price *= 31
+    def convert_USD_to_TWD(self):
+        if self.currency == SupportedCurrency.USD:
+            price = self.price * 31
             currency = SupportedCurrency.TWD.value
+            return price, currency
 
-        return price, currency
+        return self.price, self.currency
