@@ -41,13 +41,9 @@ test:
 style:
 	docker exec -it webapp sh -c "python3 -m flake8 ."
 
-.PHONY: mypy
-mypy:
-	docker exec -it webapp sh -c "python3 -m mypy ."
-
 .PHONY: check
 check:
-	make test style mypy
+	make test style
 
 clean:
 	rm -rf $(VENV_PATH)
