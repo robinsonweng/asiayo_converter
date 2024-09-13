@@ -26,11 +26,11 @@ install: env
 # docker compose command shortcut
 .PHONY: up
 up:
-		docker compose up
+		docker compose -f dev.yml up
 
 .PHONY: down
 down:
-		docker compose down --rmi local
+		docker compose -f dev.yml down --rmi local
 
 .PHONY: freeze-prod
 freeze-prod:
