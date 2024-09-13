@@ -39,6 +39,13 @@ class OrderFormatConverterView(viewsets.ViewSet):
         if not self.correct_format(data_serializer["currency"].value):
             raise ValidationError("Currency format is wrong")
 
+        currency = SupportedCurrency(data_serializer["currency"].value)
+        price = data_serializer["price"].value
+        if currency == SupportedCurrency.USD:
+            data_serializer.validated_data["price"] = price * 31
+            data_serializer.validated_data["currency"] = \
+                SupportedCurrency.TWD.value
+
         return Response(
             data=data_serializer.validated_data,
             status=status.HTTP_201_CREATED,

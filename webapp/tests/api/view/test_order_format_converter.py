@@ -158,3 +158,35 @@ class TestOrderFormatConverterView(APITestBase):
             "currency": "TWD"
         }
         self.assertDictEqual(response.json(), expected_response)
+
+    def test_given_correct_format_price_under_2k_currency_usd_should_201(self):
+        price = "1001"
+        data = {
+            "id": "A0000001",
+            "name": "Melody Holiday Inn",
+            "address": {
+                "city": "taipei-city",
+                "district": "da-an-district",
+                "street": "fuxing-south-road"
+            },
+            "price": price,
+            "currency": "USD"
+        }
+
+        url = reverse(self.view_name)
+        response = self.client.post(url, data=data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        expected_response = {
+            "id": "A0000001",
+            "name": "Melody Holiday Inn",
+            "address": {
+                "city": "taipei-city",
+                "district": "da-an-district",
+                "street": "fuxing-south-road"
+            },
+            "price": int(price) * 31,
+            "currency": "TWD"
+        }
+        self.assertDictEqual(response.json(), expected_response)
