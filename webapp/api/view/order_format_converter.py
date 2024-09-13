@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import (
-    TYPE_CHECKING
+    TYPE_CHECKING,
+    List,
 )
 
 if TYPE_CHECKING:
@@ -12,6 +13,7 @@ from rest_framework import (
 )
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from drf_yasg.utils import swagger_auto_schema
 
 from api.serializer.order_format_converter import (
     CreateOrderFormatConverterSerializer
@@ -20,6 +22,13 @@ from api.enums import SupportedCurrency
 
 
 class OrderFormatConverterView(viewsets.ViewSet):
+    @swagger_auto_schema(
+        request_body=CreateOrderFormatConverterSerializer,
+        responses={
+            status.HTTP_400_BAD_REQUEST: None,
+            status.HTTP_201_CREATED: CreateOrderFormatConverterSerializer,
+        }
+    )
     def create(self, request: Request) -> Response:
         data_serializer = CreateOrderFormatConverterSerializer(
             data=request.data
