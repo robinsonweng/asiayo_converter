@@ -19,6 +19,8 @@ A: 啟動專案的方式為 make up
 
 
 ## 如何啟動這個專案?
+專案的 domain name 為 `localhost`
+swagger 的 url 為 `http://localhost/api/v1/swagger`
 
 - `make up`
 在本地啟動本專案
