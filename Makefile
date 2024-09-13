@@ -4,10 +4,6 @@ WEBAPP_PATH = webapp
 
 VENV_PATH = $(WEBAPP_PATH)/$(VENV)
 
-clean:
-		rm -rf $(VENV_PATH)
-		find . -type f -name '*.pyc' -delete
-
 .PHONY: env
 env:
 		@if [ ! -d $(VENV_PATH) ] ; \
@@ -40,3 +36,7 @@ freeze-prod:
 .PHONY: test
 test:
 		docker exec -it webapp bash -c "python3 -m pytest --ds=asiayo.settings tests/"
+
+clean:
+		rm -rf $(VENV_PATH)
+		find . -type f -name '*.pyc' -delete
