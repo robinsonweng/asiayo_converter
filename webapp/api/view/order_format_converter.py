@@ -37,7 +37,7 @@ class OrderFormatConverterView(viewsets.ViewSet):
             status=status.HTTP_201_CREATED,
         )
 
-    def contain_non_english(self, value: str) -> str:
+    def contain_non_english(self, value: str) -> bool:
         # only english and space is allowed
 
         # upper case is 65 ~ 90
@@ -55,7 +55,7 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
         return False
 
-    def not_capicalize(self, value: str):
+    def not_capicalize(self, value: str) -> bool:
         """
             this function assume that the value already check by
             contain_non_english function
@@ -94,4 +94,6 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
         return False
 
+    def price_over_2000(self, value: int) -> bool:
+        pass
 
