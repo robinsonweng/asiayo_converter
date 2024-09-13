@@ -27,38 +27,57 @@ class OrderFormatConverterView(viewsets.ViewSet):
         if not data_serializer.is_valid():
             raise ValidationError("Incorrect json field")
 
-        if self.contain_non_english(data_serializer["name"].value):
+        name = data_serializer["name"].value
+        price = data_serializer["price"].value
+        currency = data_serializer["currency"].value
+
+        if currency not in SupportedCurrency:
+            raise ValidationError("Currency format is wrong")
+        currency = SupportedCurrency(currency)
+
+        order_format_converter = OrderFormatConverter(name, price, currency)
+
+        if order_format_converter.contain_non_english():
             raise ValidationError("Name contains Non-English characters")
 
-        if self.not_capicalize(data_serializer["name"].value):
+        if order_format_converter.not_capicalize():
             raise ValidationError("Name is not capitalized")
 
-        if self.price_over_2000(data_serializer["price"].value):
+        if order_format_converter.price_over_2000():
             raise ValidationError("Price is over 2000")
 
-        if not self.correct_format(data_serializer["currency"].value):
-            raise ValidationError("Currency format is wrong")
-
-        currency = SupportedCurrency(data_serializer["currency"].value)
-        price = data_serializer["price"].value
-        if currency == SupportedCurrency.USD:
-            data_serializer.validated_data["price"] = price * 31
-            data_serializer.validated_data["currency"] = \
-                SupportedCurrency.TWD.value
+        price, currency = order_format_converter.convert_USD_to_TWD(
+            order_format_converter.price,
+            order_format_converter.currency
+        )
+        data_serializer.validated_data["price"] = price
+        data_serializer.validated_data["currency"] = currency
 
         return Response(
             data=data_serializer.validated_data,
             status=status.HTTP_201_CREATED,
         )
 
-    def contain_non_english(self, value: str) -> bool:
+
+class OrderFormatConverter(object):
+    def __init__(
+        self,
+        name: str,
+        price: int,
+        currency: SupportedCurrency
+    ) -> None:
+        self.name = name
+        self.price = price
+        self.currency = currency
+
+    def contain_non_english(self) -> bool:
         # only english and space is allowed
 
         # upper case is 65 ~ 90
         # lower case is 97 ~ 122
         # space is 32
 
-        for c in value:
+        for c in self.name:
             ascii_value = ord(c)
             if not (
                 (65 <= ascii_value <= 90) or
@@ -69,7 +88,7 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
         return False
 
-    def not_capicalize(self, value: str) -> bool:
+    def not_capicalize(self) -> bool:
         """
             this function assume that the value already check by
             contain_non_english function
@@ -97,7 +116,7 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
         """
 
-        secperated_letter = value.split(' ')
+        secperated_letter = self.name.split(' ')
 
         for letter in secperated_letter:
             origin_letter = letter[0]
@@ -108,16 +127,15 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
         return False
 
-    def price_over_2000(self, value: int) -> bool:
-        if value > 2000:
+    def price_over_2000(self) -> bool:
+        if self.price > 2000:
             return True
         return False
 
-    def correct_format(self, value: str) -> bool:
-        if value in SupportedCurrency:
-            return True
-        return False
+    @staticmethod
+    def convert_USD_to_TWD(price: int, currency: SupportedCurrency):
+        if currency == SupportedCurrency.USD:
+            price *= 31
+            currency = SupportedCurrency.TWD.value
 
-
-class OrderFormatConverter(object):
-    pass
+        return price, currency
