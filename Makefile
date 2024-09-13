@@ -28,14 +28,26 @@ up:
 down:
 	docker compose -f dev.yml down --rmi local
 
-.PHONY: freeze-prod
+.PHONY: freeze-dev
 freeze-prod:
 	./$(VENV_PATH)/bin/pip freeze > $(WEBAPP_PATH)/requirements/dev.txt
 
 # for django
 .PHONY: test
 test:
-	docker exec -it webapp bash -c "python3 -m pytest --ds=asiayo.settings tests/"
+	docker exec -it webapp bash -c "python3 manage.py test tests"
+
+.PHONY: style
+style:
+	docker exec -it webapp bash -c "python3 -m flake8 ."
+
+.PHONY: mypy
+mypy:
+	docker exec -it webapp bash -c "python3 -m mypy ."
+
+.PHONY: check
+check:
+	make test style mypy
 
 clean:
 	rm -rf $(VENV_PATH)
