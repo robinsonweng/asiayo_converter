@@ -127,8 +127,8 @@ class TestOrderFormatConverterView(APITestBase):
         expected_response = ["Name contains Non-English characters"]
         self.assertEqual(response.json(), expected_response)
 
-    def test_make_this_test_pass(self):
-
+    def test_given_correct_format_price_under_2k_currency_twd_should_201(self):
+        price = "1001"
         data = {
             "id": "A0000001",
             "name": "Melody Holiday Inn",
@@ -137,7 +137,7 @@ class TestOrderFormatConverterView(APITestBase):
                 "district": "da-an-district",
                 "street": "fuxing-south-road"
             },
-            "price": "1001",
+            "price": price,
             "currency": "TWD"
         }
 
@@ -146,5 +146,15 @@ class TestOrderFormatConverterView(APITestBase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        expected_response = {}
+        expected_response = {
+            "id": "A0000001",
+            "name": "Melody Holiday Inn",
+            "address": {
+                "city": "taipei-city",
+                "district": "da-an-district",
+                "street": "fuxing-south-road"
+            },
+            "price": int(price),
+            "currency": "TWD"
+        }
         self.assertDictEqual(response.json(), expected_response)

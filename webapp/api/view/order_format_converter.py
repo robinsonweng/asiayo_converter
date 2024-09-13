@@ -40,7 +40,7 @@ class OrderFormatConverterView(viewsets.ViewSet):
             raise ValidationError("Currency format is wrong")
 
         return Response(
-            data={},
+            data=data_serializer.validated_data,
             status=status.HTTP_201_CREATED,
         )
 
