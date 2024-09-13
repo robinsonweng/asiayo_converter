@@ -16,6 +16,7 @@ from rest_framework.exceptions import ValidationError
 from api.serializer.order_format_converter import (
     CreateOrderFormatConverterSerializer
 )
+from api.enums import SupportedCurrency
 
 
 class OrderFormatConverterView(viewsets.ViewSet):
@@ -34,6 +35,9 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
         if self.price_over_2000(data_serializer["price"].value):
             raise ValidationError("Price is over 2000")
+
+        if not self.correct_format(data_serializer["currency"].value):
+            raise ValidationError("Currency format is wrong")
 
         return Response(
             data={},
@@ -99,6 +103,11 @@ class OrderFormatConverterView(viewsets.ViewSet):
 
     def price_over_2000(self, value: int) -> bool:
         if value > 2000:
+            return True
+        return False
+
+    def correct_format(self, value: str) -> bool:
+        if value in SupportedCurrency:
             return True
         return False
 

@@ -23,6 +23,27 @@ class APITestBase(APITestCase):
 class TestOrderFormatConverterView(APITestBase):
     view_name = "api:orders-list"
 
+    def test_given_unsupported_currency_type_should_400(self):
+        data = {
+            "id": "A0000001",
+            "name": "Melody Holiday Inn",
+            "address": {
+                "city": "taipei-city",
+                "district": "da-an-district",
+                "street": "fuxing-south-road"
+            },
+            "price": "1001",
+            "currency": "JPY"
+        }
+
+        url = reverse(self.view_name)
+        response = self.client.post(url, data=data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        expected_response = ["Currency format is wrong"]
+        self.assertEqual(response.json(), expected_response)
+
     def test_given_over_2k_price_should_400(self):
         data = {
             "id": "A0000001",
