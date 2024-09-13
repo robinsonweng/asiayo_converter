@@ -25,7 +25,7 @@ from api.routers import v1_router
 
 v1_schema = get_schema_view(
     openapi.Info(
-        title="asiayo take home quiz",
+        title="Asiayo take home quiz",
         default_version="v1",
     ),
     public=True,
