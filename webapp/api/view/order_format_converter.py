@@ -5,14 +5,17 @@ from typing import (
 
 if TYPE_CHECKING:
     from rest_framework.request import Request
-    from rest_framework.response import Response
 
 from rest_framework import (
     viewsets,
     status
 )
+from rest_framework.response import Response
 
 
 class OrderFormatConverterView(viewsets.ViewSet):
     def create(self, request: Request) -> Response:
-        pass
+        return Response(
+            data={},
+            status=status.HTTP_201_CREATED,
+        )
