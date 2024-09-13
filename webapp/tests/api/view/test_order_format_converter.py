@@ -44,6 +44,26 @@ class TestOrderFormatConverterView(APITestBase):
         expected_response = ["Incorrect json field"]
         self.assertEqual(response.json(), expected_response)
 
+    def test_given_non_english_character_name_should_400(self):
+        data = {
+            "id": "A0000001",
+            "name": "Melody Holiday Inn!",
+            "address": {
+                "city": "taipei-city",
+                "district": "da-an-district",
+                "street": "fuxing-south-road"
+            },
+            "price": "2050",
+            "currency": "TWD"
+        }
+        url = reverse(self.view_name)
+        response = self.client.post(url, data=data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        expected_response = ["Name contains Non-English characters"]
+        self.assertEqual(response.json(), expected_response)
+
     def test_make_this_test_pass(self):
 
         data = {
