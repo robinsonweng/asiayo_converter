@@ -23,7 +23,7 @@ class DjangoEnv(BaseModel):
 class EnvionmentVariable(BaseSettings):
     model_config = SettingsConfigDict(env_nested_delimiter="__")
 
-    django: DjangoEnv
+    DJANGO: DjangoEnv
 
 environment_variable = EnvionmentVariable()
 
@@ -35,10 +35,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = environment_variable.django.SECRET_KEY
+SECRET_KEY = environment_variable.DJANGO.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environment_variable.django.DEBUG
+DEBUG = environment_variable.DJANGO.DEBUG
 
 ALLOWED_HOSTS = []
 

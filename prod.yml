@@ -5,8 +5,8 @@ services:
       context: ./webapp
       dockerfile: Dockerfile
     environment:
-      - DJANGO__DEBUG={DJANGO__DEBUG}
-      - DJANGO__SECRET_KEY={DJANGO__SECRET_KEY}
+      - DJANGO__DEBUG=${DJANGO__DEBUG}
+      - DJANGO__SECRET_KEY=${DJANGO__SECRET_KEY}
     ports:
       - "0.0.0.0:80:8000"
 
